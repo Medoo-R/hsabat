@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام المحاسبة وإدارة المحل التجاري</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">🏪</div>
+      <h1>نظام المحاسبة وإدارة المحل</h1>
+      <p>تسجيل الدخول إلى النظام</p>
+      <form id="loginForm">
+        <label>اسم المستخدم</label>
+        <input id="loginUsername" autocomplete="username" placeholder="اسم المستخدم" required>
+        <label>كلمة المرور</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+        <button class="primary full" type="submit">تسجيل الدخول</button>
+        <div id="loginError" class="login-error"></div>
+      </form>
+      <div class="login-hint">الحساب الأولي: <b>admin</b> / <b>1234</b></div>
+    </div>
+  </div>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🏪</div>
+        <div>
+          <h1 id="brandTitle">نظام المحاسبة وإدارة المحل التجاري</h1>
+          <p>إدارة المخزون • المبيعات • المشتريات • الحسابات • التقارير</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="clock">--:--</span>
+        <span class="date" id="topDate"></span>
+        <button class="icon-btn" title="الإشعارات" id="notifBtn">🔔<b id="notifCount">0</b></button>
+        <button class="icon-btn" title="الإعدادات" onclick="navigate('الإعدادات')">⚙️</button>
+        <div class="user">👤 <span id="currentUserName">مدير النظام</span> <button class="logout-btn" onclick="logout()">خروج</button></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="side-title">القائمة الرئيسية</div>
+        <button class="nav active" onclick="navigate('الرئيسية', this)">🏠 <span>الرئيسية</span></button>
+        <button class="nav" onclick="navigate('المبيعات', this)">🛒 <span>المبيعات</span></button>
+        <button class="nav" onclick="navigate('مردود المبيعات', this)">↩️ <span>مردود المبيعات</span></button>
+        <button class="nav" onclick="navigate('المشتريات', this)">🧾 <span>المشتريات</span></button>
+        <button class="nav" onclick="navigate('مردود المشتريات', this)">↩️ <span>مردود المشتريات</span></button>
+        <button class="nav" onclick="navigate('المخزون', this)">📦 <span>المخزون</span></button>
+        <button class="nav" onclick="navigate('قائمة الفواتير', this)">📋 <span>قائمة الفواتير</span></button>
+        <button class="nav" onclick="navigate('العملاء', this)">👤 <span>العملاء</span></button>
+        <button class="nav" onclick="navigate('الموردون', this)">👥 <span>الموردون</span></button>
+        <button class="nav" onclick="navigate('الصندوق والبنوك', this)">🏦 <span>الصندوق والبنوك</span></button>
+        <button class="nav" onclick="navigate('المصروفات', this)">📄 <span>المصروفات</span></button>
+        <button class="nav" onclick="navigate('الحسابات', this)">💼 <span>الحسابات</span></button>
+        <button class="nav" onclick="navigate('المحاسبة', this)">📒 <span>المحاسبة</span></button>
+        <button class="nav" onclick="navigate('التقارير', this)">📊 <span>التقارير</span></button>
+        <button class="nav" onclick="navigate('المستخدمون والصلاحيات', this)">🛡️ <span>المستخدمون والصلاحيات</span></button>
+        <button class="nav" onclick="navigate('النسخ الاحتياطي', this)">☁️ <span>النسخ الاحتياطي</span></button>
+        <button class="nav" onclick="navigate('الإعدادات', this)">⚙️ <span>الإعدادات</span></button>
+        <div class="side-footer" id="sideFooter">متجرك • بإدارة أفضل<br><small>الإصدار 2.0.0</small></div>
+      </aside>
+
+      <main class="content">
+        <div class="page-head">
+          <div>
+            <h2 id="pageTitle">لوحة التحكم</h2>
+            <p>نظرة سريعة على أداء المحل وحركة الحسابات والمخزون</p>
+          </div>
+          <button class="primary" onclick="openInvoiceForm('sale')">＋ فاتورة بيع جديدة</button>
+        </div>
+
+        <section id="dashboard">
+          <div class="cards">
+            <div class="card orange"><span>📦</span><p>قيمة المخزون الحالي</p><strong id="stockValue">0.00</strong><small id="itemCountLabel">عدد الأصناف: 0</small></div>
+            <div class="card blue"><span>🛒</span><p>إجمالي المبيعات</p><strong id="totalSalesValue">0.00</strong><small>كل الفترات</small></div>
+            <div class="card red"><span>🧾</span><p>إجمالي المشتريات</p><strong id="totalPurchasesValue">0.00</strong><small>كل الفترات</small></div>
+            <div class="card green"><span>💰</span><p>صافي الربح (تقديري)</p><strong id="netProfitValue">0.00</strong><small>مبيعات - مشتريات - مصروفات</small></div>
+          </div>
+
+          <div class="grid two">
+            <section class="panel chart-panel">
+              <div class="panel-title"><h3>المبيعات والمشتريات (آخر 7 أيام)</h3>📈</div>
+              <canvas id="salesChart" height="220"></canvas>
+            </section>
+            <section class="panel">
+              <div class="panel-title"><h3>أكثر الأصناف مبيعاً</h3>🏆</div>
+              <div class="table" id="topItemsTable">
+                <div class="tr th"><span>#</span><span>المنتج</span><span>الكمية</span><span>إجمالي المبيعات</span></div>
+                <div id="topItemsBody"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="grid three">
+            <section class="panel alerts">
+              <div class="panel-title"><h3>تنبيهات النظام</h3>🔔</div>
+              <div id="alertsBody"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-title"><h3>أرصدة الحسابات</h3>🏦</div>
+              <div class="balance"><span>الصندوق</span><b id="balCash">0.00</b></div>
+              <div class="balance"><span>البنك</span><b id="balBank">0.00</b></div>
+              <div class="balance"><span>عملاء (مدينون)</span><b id="balReceivable">0.00</b></div>
+              <div class="balance"><span>موردون (دائنون)</span><b id="balPayable">0.00</b></div>
+            </section>
+            <section class="panel">
+              <div class="panel-title"><h3>حالة المخزون</h3>📦</div>
+              <div class="stock-status">
+                <div><strong id="stAvailable">0</strong><small>متوفر</small></div>
+                <div><strong id="stLow">0</strong><small>أقل من الحد الأدنى</small></div>
+                <div><strong id="stOut">0</strong><small>نافذ</small></div>
+                <div><strong id="stTotal">0</strong><small>إجمالي الأصناف</small></div>
+              </div>
+            </section>
+          </div>
+
+          <section class="quick">
+            <button onclick="openInvoiceForm('sale')">🧾<b>فاتورة بيع</b><small>إنشاء فاتورة مبيعات جديدة</small></button>
+            <button onclick="openInvoiceForm('purchase')">📄<b>فاتورة شراء</b><small>إنشاء فاتورة مشتريات جديدة</small></button>
+            <button onclick="openReturnForm('sale')">↩️<b>مردود مبيعات</b><small>إرجاع بضاعة مباعة</small></button>
+            <button onclick="openReturnForm('purchase')">↩️<b>مردود مشتريات</b><small>إرجاع بضاعة مشتراة</small></button>
+            <button onclick="quickAddItem()">📦<b>إضافة صنف</b><small>إضافة صنف جديد للمخزون</small></button>
+            <button onclick="quickAddCustomer()">👤<b>إضافة عميل</b><small>إضافة عميل جديد</small></button>
+            <button onclick="quickAddSupplier()">👥<b>إضافة مورد</b><small>إضافة مورد جديد</small></button>
+            <button onclick="openVoucherForm('receipt')">💵<b>سند قبض</b><small>إدخال سند قبض</small></button>
+            <button onclick="openVoucherForm('payment')">💳<b>سند صرف</b><small>إدخال سند صرف</small></button>
+            <button onclick="navigate('التقارير')">📊<b>التقارير</b><small>عرض جميع التقارير</small></button>
+          </section>
+        </section>
+
+        <section id="module" class="module-view hidden printable"></section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-box printable" id="modalBox"></div>
+  </div>
+
+  <div id="usersModal" class="modal hidden">
+    <div class="modal-box wide">
+      <button class="close" onclick="closeUsersModal()">×</button>
+      <h2>إدارة المستخدمين والصلاحيات</h2>
+      <p class="muted">يمكن للمدير إنشاء المستخدمين وتحديد الصلاحيات المسموحة لكل مستخدم.</p>
+      <div class="permission-form">
+        <input id="newUsername" placeholder="اسم المستخدم">
+        <input id="newName" placeholder="الاسم الظاهر">
+        <input id="newPassword" type="password" placeholder="كلمة المرور">
+        <select id="newRole">
+          <option value="employee">موظف</option>
+          <option value="cashier">كاشير</option>
+          <option value="manager">مدير</option>
+        </select>
+      </div>
+      <div class="permissions-grid" id="permissionChecks"></div>
+      <button class="primary" onclick="createUser()">＋ إنشاء المستخدم</button>
+      <div id="usersList" class="users-list"></div>
+    </div>
+  </div>
+<div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
