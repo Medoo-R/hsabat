@@ -99,8 +99,8 @@ async function ensureAdmin(){
   let users=getUsers();
   if(!users.length){
     users=[{
-      id:crypto.randomUUID(),username:"admin",name:"مدير النظام",
-      passwordHash:await hashPassword("1234"),role:"manager",
+      id:crypto.randomUUID(),username:"Admin",name:"مدير النظام",
+      passwordHash:await hashPassword("05699"),role:"manager",
       permissions:defaultPermissions,active:true
     }];
     localStorage.setItem("erp_users",JSON.stringify(users));
